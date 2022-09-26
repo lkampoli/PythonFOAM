@@ -1,7 +1,6 @@
 cd ../../TurbulenceModel_Examples/TurbulenceModels/momentumTransportModels
-
-wclean
-wmake
+#wclean
+#wmake
 
 cd ../incompressible
 wclean

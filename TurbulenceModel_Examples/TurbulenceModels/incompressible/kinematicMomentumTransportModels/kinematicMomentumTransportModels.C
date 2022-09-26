@@ -97,13 +97,16 @@ makeRASModel(LRR);
 #include "SSG.H"
 makeRASModel(SSG);
 
-
 // New models by Romit
 #include "PykEpsilon.H"
 makeRASModel(PykEpsilon);
 
 #include "ML_One_Equation.H"
 makeRASModel(ML_One_Equation);
+
+// New models by Campoli
+#include "PykOmegaSSTGEP.H"
+makeRASModel(PykOmegaSSTGEP);
 
 // -------------------------------------------------------------------------- //
 // LES models
