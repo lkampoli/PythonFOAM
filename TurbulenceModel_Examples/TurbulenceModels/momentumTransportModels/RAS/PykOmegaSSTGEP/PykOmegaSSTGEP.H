@@ -171,17 +171,40 @@ protected:
             volScalarField k_;
             volScalarField omega_;
 
+//	      volScalarField I1;
+//            volScalarField I2;
+//            volScalarField I3;
+//            volScalarField I4;
+//            volScalarField I5;
+//            volScalarField Eta1;
+//            volScalarField Eta2;
+//            volScalarField Eta3;
+//            volScalarField Eta4;
+//            volScalarField Eta5;
+//            volSymmTensorField T1, T2, T3, T4, T5, T6, T7, T8, T9, T10;
+//            volSymmTensorField bij_;
+	    
 	    volSymmTensorField nonlinearStress_;
             volSymmTensorField Rij_;
 	    volSymmTensorField Rall_; 
 
             //volScalarField xswtch_;
 
+	    volScalarField cluster_;
+            //volScalarField ClusterId;
+
+//	    volSymmTensorField Sijt;
+//	    volTensorField     Oijt;
+        
+//            volVectorField DUDt_;
+//            volScalarField q1_, q2_, q3_, q4_;
+//            volScalarField wallDistance_;
+
 	 // Python stuff
 
-            PyObject *pName, *pModule;
-            PyObject *ml_nut, *ml_nut_args;
-            PyObject *array_2d;// , *rank_val;
+	    PyObject *pName, *pModule;
+            PyObject *clustering, *clustering_args;
+            PyObject *array_2d, *rank_val;
             PyArrayObject *pValue;
             int rank;
 

@@ -69,6 +69,7 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP::F1
     return tanh(pow4(arg1));
 }
 
+
 template<class BasicMomentumTransportModel>
 tmp<volScalarField>
 PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP::F2() const
@@ -86,6 +87,7 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP::F2() const
     return tanh(sqr(arg2));
 }
 
+
 template<class BasicMomentumTransportModel>
 tmp<volScalarField>
 PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP::F3() const
@@ -98,6 +100,7 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP::F3() const
 
     return 1 - tanh(pow4(arg3));
 }
+
 
 template<class BasicMomentumTransportModel>
 tmp<volScalarField>
@@ -112,8 +115,6 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP::F23() const
 
     return f23;
 }
-
-
 
 
 template<class BasicMomentumTransportModel>
@@ -377,6 +378,21 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP
         ),
         this->mesh_
     ),
+    // This may not be necessary but maybe usefull at some point
+    // for example for plotting purposes ...
+    cluster_
+    (
+        IOobject
+        (
+            IOobject::groupName("cluster", alphaRhoPhi.group()),
+            this->runTime_.timeName(),
+            this->mesh_,
+            IOobject::NO_READ, // NO_READ = 0, MUST_READ = 1, MUST_READ_IF_MODIFIED = 3, READ_IF_PRESENT
+            IOobject::AUTO_WRITE
+        ),
+        this->mesh_,
+        dimensionedScalar("cluster",dimensionSet(0,0,0,0,0,0,0), 0)
+    ),
 
 ////////////////////////////////////////////////////////////////////////
 //  added by Yuan Fang --start
@@ -388,7 +404,9 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP
         (
             IOobject::groupName("nonlinearStress", alphaRhoPhi.group()),
             this->runTime_.timeName(),
-            this->mesh_
+            this->mesh_,
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
         ),
 	//0.0*symm(fvc::grad(this->U_)/this->omega_)
         this->mesh_,
@@ -399,6 +417,19 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP
             Zero
         )
     ),
+//    bij_
+//    (
+//        IOobject
+//        (
+//            IOobject::groupName("bij", alphaRhoPhi.group()),
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//      //0.0*symm(fvc::grad(this->U_)/this->omega_)
+//      this->mesh_
+//    ),
      Rij_
     (
         IOobject
@@ -436,6 +467,280 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP
             Zero
         )
     )
+//    T1
+//    (
+//        IOobject
+//        (
+//            "T1",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T2
+//    (
+//        IOobject
+//        (
+//            "T2",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T3
+//    (
+//        IOobject
+//        (
+//            "T3",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T4
+//    (
+//        IOobject
+//        (
+//            "T4",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T5
+//    (
+//        IOobject
+//        (
+//            "T5",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T6
+//    (
+//        IOobject
+//        (
+//            "T6",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T7
+//    (
+//        IOobject
+//        (
+//            "T7",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T8
+//    (
+//        IOobject
+//        (
+//            "T8",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T9
+//    (
+//        IOobject
+//        (
+//            "T9",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    T10
+//    (
+//        IOobject
+//        (
+//            "T10",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    I1
+//    (
+//      IOobject
+//      (
+//            IOobject::groupName("I1", alphaRhoPhi.group()),
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//    ),
+//    I2
+//    (
+//      IOobject
+//      (
+//            IOobject::groupName("I2", alphaRhoPhi.group()),
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//    ),
+//    I3
+//    (
+//      IOobject
+//      (
+//            IOobject::groupName("I3", alphaRhoPhi.group()),
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//    ),
+//    I4
+//    (
+//      IOobject
+//      (
+//            IOobject::groupName("I4", alphaRhoPhi.group()),
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//    ),
+//    I5
+//    (
+//      IOobject
+//      (
+//            IOobject::groupName("I5", alphaRhoPhi.group()),
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//    ),
+//    Eta1
+//    (
+//        IOobject
+//        (
+//            "Eta1",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//      //0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    Eta2
+//    (
+//        IOobject
+//        (
+//            "Eta2",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//        //0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    Eta3
+//    (
+//        IOobject
+//        (
+//            "Eta3",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//        //0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    Eta4
+//    (
+//        IOobject
+//        (
+//            "Eta4",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//        //0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    Eta5
+//    (
+//        IOobject
+//        (
+//            "Eta5",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//        //0.0*symm(fvc::grad(this->U_))/omega_
+//    ),
+//    Sijt 
+//    (
+//        IOobject
+//        (
+//            "Sijt",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//        //0.0*symm(fvc::grad(this->U_))/omega_
+//        //0.5*symm(gradU + gradU.T())
+//    ),
+//    Oijt 
+//    (
+//        IOobject
+//        (
+//            "Oijt",
+//            this->runTime_.timeName(),
+//            this->mesh_,
+//            IOobject::NO_READ,
+//            IOobject::AUTO_WRITE
+//        ),
+//        this->mesh_
+//	//-0.5*(gradU - gradU.T())
+//    )
+
+
 //    xswtch_
 //    (
 //        IOobject
@@ -457,21 +762,49 @@ PykOmegaSSTGEP<BasicMomentumTransportModel>::PykOmegaSSTGEP
     bound(k_, this->kMin_);
     bound(omega_, this->omegaMin_);
 
+    // This is where the Python interface is instantiated //
+    //#include "PythonCreate.H"
+    
+    Info<< "initialize python" << endl;
     Py_Initialize();
+    Info<< "python initialize successful" << endl;
+
+    Info<< "import sys" << endl;
     PyRun_SimpleString("import sys");
+
+    Info<< "sys.path.append" << endl;
     PyRun_SimpleString("sys.path.append(\".\")");
 
     // initialize numpy array library
     // init_numpy();
+    //Info<< "numpy initialize successful" << endl;
+    // if (PyErr_Occurred()) {
+    //     Info<< "Failed to import numpy Python module(s)." << endl;
+    //     return NULL; // Or some suitable return value to indicate failure.
+    // }
+    // assert(PyArray_API);
     import_array1();
 
     pName = PyUnicode_DecodeFSDefault("python_module"); // Python filename
 
     pModule = PyImport_Import(pName);
     // Py_DECREF(pName);
+    
+    //if (!pModule)
+    //{
+    //    FatalErrorInFunction
+    //    << "Errors loading python_module (missing imports?)" << nl
+    //    << exit(FatalError);
+    //}
 
-    ml_nut = PyObject_GetAttrString(pModule, "ml_nut");
-    ml_nut_args = PyTuple_New(1); // One array sent to Python
+    // The function "clustering" should be present in the "python_module.py"
+    // at run-time, otherwise you will get an error. At compile-time is ok
+    // not to have it.
+    Info<< " get clustering python function" << endl;
+    clustering = PyObject_GetAttrString(pModule, "clustering");
+
+    Info<< " define args for clustering" << endl;
+    clustering_args = PyTuple_New(2); // Two arrays sent to Python
 
     // Get process id
     rank = Pstream::myProcNo();
@@ -600,6 +933,8 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
     );
     tmp<volTensorField> tgradU = fvc::grad(U);
     volScalarField S2(2*magSqr(symm(tgradU())));
+
+    // Moved down because they depend on variables computed before ...
     //volScalarField::Internal GbyNu((dev(twoSymm(tgradU()()))) && tgradU()());
     //volScalarField::Internal GbyNuaijx(((dev(twoSymm(tgradU()()))) - (nonlinearStress_/nut())) && tgradU()());
     //volScalarField::Internal G(this->GName(), nut()*GbyNuaijx);
@@ -616,7 +951,6 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
 	
     volSymmTensorField sij(dev(symm(tgradU()))); 
     volTensorField omegaij((skew(tgradU())));
-	
 
     volSymmTensorField Sijt = sij * tau;
     volTensorField     Oijt = omegaij * tau;
@@ -639,6 +973,7 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
     volSymmTensorField T10= symm((Oijt & (Sijt & (Sijt & (Oijt & Oijt)))) -(Oijt & (Oijt & (Sijt & (Sijt & Oijt)))));
     
     // imported from kOmegaSSTGEP_Rijhat_added.C
+    // This is just for compatibility, with nonLinearModel.H file
     word model (
       this->coeffDict_.lookup ("model")
     );
@@ -660,105 +995,17 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
     else {
 	FatalError << "unknown model " << model << nl << exit(FatalError);
     }
-//
-    nonlinearStress_.correctBoundaryConditions();
-//
-//
-    Rall_= ((2.0/3.0)*I)*k_ - this->nut_*dev(twoSymm(tgradU())) + nonlinearStress_;
-    Rall_.correctBoundaryConditions();
- 
-      volScalarField Rterm(Rij_ && symm(tgradU()));	
-//    //tgradU.clear();
 
-    dimensionedScalar small_val
-    (
-       "small_val",
-       dimensionSet(0, 2, -1, 0, 0, 0, 0),
-       1e-25
-    );
-    
-    volScalarField::Internal GbyNu((dev(twoSymm(tgradU()()))) && tgradU()());
-    volScalarField::Internal GbyNuaijx(((dev(twoSymm(tgradU()()))) - (nonlinearStress_/nut())) && tgradU()());
-    volScalarField::Internal G(this->GName(), nut()*GbyNuaijx);
 
 ////////////////////////////////////////////////////////////////////////
-//  added by Yuan Fang --end
+//  added by Lorenzo --start
+//  compute all derived variables to be passed to python
+//  and then call it and get the cluster id back to be used
+//  to select the GEP model in each cluster
 ////////////////////////////////////////////////////////////////////////
-	
-    // Update omega and G at the wall
-    omega_.boundaryFieldRef().updateCoeffs();
 
-    volScalarField CDkOmega
-    (
-        (2*alphaOmega2_)*(fvc::grad(k_) & fvc::grad(omega_))/omega_
-    );
-
-    volScalarField F1(this->F1(CDkOmega));
-    volScalarField F23(this->F23());
-
-    {
-        volScalarField::Internal gamma(this->gamma(F1));
-        volScalarField::Internal beta(this->beta(F1));
-
-        // Turbulent frequency equation
-        tmp<fvScalarMatrix> omegaEqn
-        (
-            fvm::ddt(alpha, rho, omega_)
-          + fvm::div(alphaRhoPhi, omega_)
-          - fvm::laplacian(alpha*rho*DomegaEff(F1), omega_)
-         ==
-            alpha()*rho()*gamma
-           *min
-            (
-                GbyNuaijx,
-                (c1_/a1_)*betaStar_*omega_()
-               *max(a1_*omega_(), b1_*F23()*sqrt(S2()))
-            )
-          + alpha()*rho()*gamma*Rterm/(nut()+small_val)
-          - fvm::SuSp((2.0/3.0)*alpha()*rho()*gamma*divU, omega_)
-          - fvm::Sp(alpha()*rho()*beta*omega_(), omega_)
-          - fvm::SuSp
-            (
-                alpha()*rho()*(F1() - scalar(1))*CDkOmega()/omega_(),
-                omega_
-            )
-          + Qsas(S2(), gamma, beta)
-          + omegaSource()
-          + fvOptions(alpha, rho, omega_)
-        );
-
-        omegaEqn.ref().relax();
-        fvOptions.constrain(omegaEqn.ref());
-        omegaEqn.ref().boundaryManipulate(omega_.boundaryFieldRef());
-        solve(omegaEqn);
-        fvOptions.correct(omega_);
-        bound(omega_, this->omegaMin_);
-    }
-
-    // Turbulent kinetic energy equation
-    tmp<fvScalarMatrix> kEqn
-    (
-        fvm::ddt(alpha, rho, k_)
-      + fvm::div(alphaRhoPhi, k_)
-      - fvm::laplacian(alpha*rho*DkEff(F1), k_)
-     ==
-        alpha()*rho()*Pk(G)
-      + alpha()*rho()*Rterm
-      - fvm::SuSp((2.0/3.0)*alpha()*rho()*divU, k_)
-      - fvm::Sp(alpha()*rho()*epsilonByk(F1, F23), k_)
-      + kSource()
-      + fvOptions(alpha, rho, k_)
-    );
-
-    kEqn.ref().relax();
-    fvOptions.constrain(kEqn.ref());
-    solve(kEqn);
-    fvOptions.correct(k_);
-    bound(k_, this->kMin_);
-
-    correctNut(S2, F23);
-
-
+  if (this->runTime_.outputTime())
+  {
     Info<< "Time = " << this->runTime_.timeName() << nl << endl;
     Info<< "Calculating fields for ML" << nl << endl;
 
@@ -769,18 +1016,12 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
     dimensionedScalar NewSMALL("0", dimensionSet(0,0,0,0,0,0,0), 1e-10);
     dimensionedScalar constantInRe("0", dimensionSet(0,0,0,0,0,0,0), 2);
     dimensionedScalar osmall ("0",dimensionSet(0,0,-1,0,0,0,0),1e-10);
+    dimensionedScalar SMALL_CONVDER( "small", dimensionSet(0,1,-2,0,0,0,0), scalar(1E-30) );
 
-    dimensionedScalar SMALL_CONVDER
-        (
-        "small",
-        dimensionSet(0,1,-2,0,0,0,0),
-        scalar(1E-30)
-        );
+    //volTensorField     gradU = fvc::grad(U);
 
-    volTensorField     gradU = fvc::grad(U);
-
-    volSymmTensorField S_ = symm(fvc::grad(U));
-    volTensorField     R_ = -skew(fvc::grad(U)); 
+    //volSymmTensorField S_ = symm(fvc::grad(U));
+    //volTensorField     R_ = -skew(fvc::grad(U)); 
     
     // grad(U) produces the transpose of the Jacobian, R is defined based on the Jacobian
     //gradU_ = fvc::grad(U);
@@ -961,7 +1202,6 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
 
     // Cell centroid coordinates
     const volVectorField& C = this->mesh_.C();
-
     //volScalarField x_ = pos(this->mesh_.C().component(vector::X));
     //volScalarField y_ = pos(this->mesh_.C().component(vector::Y));
     //volScalarField z_ = pos(this->mesh_.C().component(vector::Z));
@@ -971,7 +1211,12 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
     int num_points = this->mesh_.nPoints();
     Info << " num_cells = " << num_cells << endl;
     Info << " num_points = " << num_points << endl;
-    double input_vals[num_cells][41];
+    
+    // the second index should change according to the number of fields 
+    // to be passed to python
+    //double input_vals[num_cells][41];
+    double input_vals[num_cells][2];
+    //double input_vals[num_cells][5];
 
     // ClusterId flag is used to group all points in one initial cluster
     // which by default has value is set to 0
@@ -980,21 +1225,33 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
     {
         ClusterId[id] = 0;
     }
+    forAll(k_.boundaryField(), id)
+    {
+        ClusterId[id] = 0;
+    }
     Info << " ClusterId initialized " << endl;
+
+    forAll(k_.internalField(), id) // for boundary field use u_.boundaryField()
+    {
+        input_vals[id][0] = 0;
+        input_vals[id][1] = 0.0;
+    }
 
     // #pragma omp parallel for
     forAll(k_.internalField(), id) // for boundary field use u_.boundaryField()
     {
+
         input_vals[id][0] = ClusterId[id]; // cluster id label
-
-        input_vals[id][1] = C[id].x();
-        input_vals[id][2] = C[id].y();
-        input_vals[id][3] = C[id].z();
-
-        input_vals[id][4] = U[id].x();
-        input_vals[id][5] = U[id].y();
-        input_vals[id][6] = U[id].z();
-
+	input_vals[id][1] = k_[id]; 	   // TKE
+//        input_vals[id][1] = C[id].x();	   // x
+//        input_vals[id][2] = C[id].y();     // y
+//        input_vals[id][3] = C[id].z();     // z
+//	input_vals[id][4] = k_[id]; 	   // TKE
+//
+//        input_vals[id][4] = U[id].x();
+//        input_vals[id][5] = U[id].y();
+//        input_vals[id][6] = U[id].z();
+//
 //        input_vals[id][7] = k_[id];
 //        input_vals[id][8] = omega_[id];
 //
@@ -1024,22 +1281,26 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
 //        input_vals[id][30] = R_[id].zx();
 //        input_vals[id][31] = R_[id].zy();
 //        input_vals[id][32] = R_[id].zz();
-
+//
 //        input_vals[id][33] = gradk_[id].x();
 //        input_vals[id][34] = gradk_[id].y();
 //        input_vals[id][35] = gradk_[id].z();
-
+//
 //        input_vals[id][36] = DUDt_[id].x();
 //        input_vals[id][37] = DUDt_[id].y();
 //        input_vals[id][38] = DUDt_[id].z();
-
+//
 //        input_vals[id][39] = Q1[id];
 //        input_vals[id][40] = Q8[id];
 
-
+	  Info << input_vals[id][0] << " " << input_vals[id][1] << endl;
     }
     Info << " input_vals initialized " << endl;
 
+    // Numpy array dimensions
+    //npy_intp dim[] = {num_cells, 41};
+    npy_intp dim[] = {num_cells, 2};
+    //npy_intp dim[] = {num_cells, 5};
 
     // create a new array using 'buffer'
     array_2d = PyArray_SimpleNewFromData(2, dim, NPY_DOUBLE, &input_vals[0]);
@@ -1058,12 +1319,18 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
     // if you were defining a new array_2d with PyObject *array_2d = ..; here
     // PyArray_ENABLEFLAGS((PyArrayObject*)array_2d, NPY_ARRAY_OWNDATA);
 
-    // Overwrite data
+    // Retrieve the number of clusters ////////////////////////////////
+    int clust = 0;
+    clust = *(int*) PyArray_GETPTR2(pValue, 0, 0); // row 0, column 0
+    std::cout<<" How many clusters? " << clust << std::endl;
+    ///////////////////////////////////////////////////////////////////
+
+    // Get data back from the internal field
     forAll(k_.internalField(), id) // for boundary field use u_.boundaryField()
     {
         //double* current = (double*) PyArray_GETPTR2(pValue, id, 0);    // row id, column 0
 
-        ClusterId[id] = *(int*) PyArray_GETPTR2(pValue, id, 0); // row id, column 0
+        ClusterId[id] = *(int*) PyArray_GETPTR2(pValue, id, 1); // row id, column 1
         std::cout<<" Internal Cell " << id << " belongs to cluster " << ClusterId[id] << std::endl;
 
         //ux_[id] = *(double*) PyArray_GETPTR2(pValue, id,             0); // row id, column 0
@@ -1075,40 +1342,211 @@ void PykOmegaSSTGEP<BasicMomentumTransportModel>::correct()
     }
 
 
-    forAll(k_.boundaryField(), id)
+    // Get data back from the boundary field
+//    forAll(k_.boundaryField(), id)
+//    {
+//        ClusterId[id] = *(int*) PyArray_GETPTR2(pValue, id, 0);
+//        std::cout<<" Boundary Cell " << id << " belongs to cluster " << ClusterId[id] << std::endl;
+//    }
+
+
+    // https://www.cfd-online.com/Forums/openfoam-programming-development/95274-writing-output-simple-data-into-ascii-file.html
+    // write coordinate points of clusters
+    fileName outputFile0("cluster0.txt");
+    fileName outputFile1("cluster1.txt");
+    fileName outputFile2("cluster2.txt");
+    fileName outputFile3("cluster3.txt");
+    fileName outputFile4("cluster4.txt");
+    fileName outputFile5("outsiders.txt");
+
+    OFstream os0(outputFile0);
+    OFstream os1(outputFile1);
+    OFstream os2(outputFile2);
+    OFstream os3(outputFile3);
+    OFstream os4(outputFile4);
+    OFstream os5(outputFile5);
+    
+    // use clusterId to assign GEP models
+    forAll(nonlinearStress_,celli)
+   {
+      // so, here I hardcode the max (5) number of clusters possibly available
+      // this part is not ok, since the number of cluster should be also
+      // retrieved from python but as the number of clusters is also
+      // usually user defined in the clustering algorithm at the moment
+      // we suppose to have this info ... TODO: make number cluster retrival automatic
+      Info << " ClusterId  " << ClusterId[celli] << endl;
+      if (ClusterId[celli] == 0)
+      {
+              Info<< "\n For ClusterId 0 apply model 0 \n" << endl;
+	      nonlinearStress_[celli] = 2 * k_[celli] * (0.018245*I3[celli]*I5[celli]*T1[celli] + I4[celli]*T2[celli] + I5[celli]*T5[celli]);
+              os0 << C[celli].x() << "   " << C[celli].y(); 
+	      os0 << endl;
+      }
+      else if (ClusterId[celli] == 1)
+      {
+              Info<< "\n For ClusterId 1 apply model 1 \n" << endl;
+	      nonlinearStress_[celli] = 2 * k_[celli] * (-1.0*I2[celli]*I4[celli]*T3[celli] + I4[celli]*T4[celli] - 0.097*I5[celli]*T1[celli]*(0.03585*I5[celli] - 0.0225));
+              os1 << C[celli].x() << "   " << C[celli].y(); 
+	      os1 << endl;
+      }
+      else if (ClusterId[celli] == 2)
+      {
+              Info<< "\n For ClusterId 2 apply model 2 \n" << endl;
+	      nonlinearStress_[celli] = 2 * k_[celli] * (-1.0*I1[celli]*I3[celli]*I4[celli]*T2[celli]
+                                                          - 1.0*I3[celli]*I5[celli]*T5[celli]
+                                                          - 0.01335*T3[celli] - 0.01455*T4[celli]);
+              os2 << C[celli].x() << "   " << C[celli].y(); 
+	      os2 << endl;
+      }
+      else if (ClusterId[celli] == 3)
+      {
+              Info<< "\n For ClusterId 3 apply model 3 \n" << endl;
+	      nonlinearStress_[celli] = 2 * k_[celli] * (I4[celli]*T1[celli]*(0.01453815*I3[celli] - 0.0010099275));
+              os3 << C[celli].x() << "   " << C[celli].y(); 
+	      os3 << endl;
+      }
+      else if (ClusterId[celli] == 4)
+      {
+              Info<< "\n For ClusterId 4 apply model 4 \n" << endl;
+	      nonlinearStress_[celli] = 2 * k_[celli] * (-I1[celli]*I4[celli]*T1[celli]*(0.15*I2[celli]*I2[celli]*I2[celli] + I3[celli])
+                                + 2.0*I3[celli]*I4[celli]*T4[celli] + I4[celli]*T2[celli]*(I1[celli] - 0.097)
+                                + I4[celli]*T3[celli] + I5[celli]*T5[celli]);
+              os4 << C[celli].x() << "   " << C[celli].y(); 
+	      os4 << endl;
+      }
+      else
+      {
+              Info<< "\n More clusters than GEP models ... applying baseline model to them! \n" << endl;
+	      nonlinearStress_ =  2*k_ *(T1 - T1);
+              os5 << C[celli].x() << "   " << C[celli].y(); 
+	      os5 << endl;
+      }
+
+      // to visualize clusters on plot
+      cluster_[celli] = ClusterId[celli];
+      //int y = (int)x;
+
+   }
+
+//   fileName outputFile(this->runTime_.path()/this->runTime_.timeName());
+//   OFstream os(outputFile);
+//   os << "This is the first line in the file.\n" << endl;
+//   os << "scalarField area (" << areaField.size() << ";)" << endl;
+
+  }
+
+////////////////////////////////////////////////////////////////////////
+//  added by Lorenzo --end
+////////////////////////////////////////////////////////////////////////
+
+    // dimensional anisotropy tensor term
+    nonlinearStress_.correctBoundaryConditions();
+
+    // non-dimensional anisotropy tensor term
+    //bij_ = nonlinearStress_ / (2 * k_);
+
+    Rall_= ((2.0/3.0)*I)*k_ - this->nut_*dev(twoSymm(tgradU())) + nonlinearStress_;
+    Rall_.correctBoundaryConditions();
+ 
+    volScalarField Rterm(Rij_ && symm(tgradU()));	
+    //tgradU.clear();
+
+    dimensionedScalar small_val
+    (
+       "small_val",
+       dimensionSet(0, 2, -1, 0, 0, 0, 0),
+       1e-25
+    );
+    
+    volScalarField::Internal GbyNu((dev(twoSymm(tgradU()()))) && tgradU()());
+    volScalarField::Internal GbyNuaijx(((dev(twoSymm(tgradU()()))) - (nonlinearStress_/nut())) && tgradU()());
+    volScalarField::Internal G(this->GName(), nut()*GbyNuaijx);
+
+    // additional invariants involving anisotropy tensor a_ij
+    volScalarField Eta1 = tr(nonlinearStress_ & nonlinearStress_);
+    volScalarField Eta2 = tr(nonlinearStress_ & Sijt);
+    volScalarField Eta3 = tr(nonlinearStress_ & Sijt & Oijt);
+    volScalarField Eta4 = tr(nonlinearStress_ & Sijt & Sijt);
+    volScalarField Eta5 = tr(nonlinearStress_ & Oijt & Oijt);
+
+////////////////////////////////////////////////////////////////////////
+//  added by Yuan Fang --end
+////////////////////////////////////////////////////////////////////////
+
+    // Update omega and G at the wall
+    omega_.boundaryFieldRef().updateCoeffs();
+
+    volScalarField CDkOmega
+    (
+        (2*alphaOmega2_)*(fvc::grad(k_) & fvc::grad(omega_))/omega_
+    );
+
+    volScalarField F1(this->F1(CDkOmega));
+    volScalarField F23(this->F23());
+
     {
-        ClusterId[id] = *(int*) PyArray_GETPTR2(pValue, id, 0);
-        std::cout<<" Boundary Cell " << id << " belongs to cluster " << ClusterId[id] << std::endl;
+        volScalarField::Internal gamma(this->gamma(F1));
+        volScalarField::Internal beta(this->beta(F1));
+
+        // Turbulent frequency equation
+        tmp<fvScalarMatrix> omegaEqn
+        (
+            fvm::ddt(alpha, rho, omega_)
+          + fvm::div(alphaRhoPhi, omega_)
+          - fvm::laplacian(alpha*rho*DomegaEff(F1), omega_)
+         ==
+            alpha()*rho()*gamma
+           *min
+            (
+                GbyNuaijx,
+                (c1_/a1_)*betaStar_*omega_()
+               *max(a1_*omega_(), b1_*F23()*sqrt(S2()))
+            )
+          + alpha()*rho()*gamma*Rterm/(nut()+small_val)
+          - fvm::SuSp((2.0/3.0)*alpha()*rho()*gamma*divU, omega_)
+          - fvm::Sp(alpha()*rho()*beta*omega_(), omega_)
+          - fvm::SuSp
+            (
+                alpha()*rho()*(F1() - scalar(1))*CDkOmega()/omega_(),
+                omega_
+            )
+          + Qsas(S2(), gamma, beta)
+          + omegaSource()
+          + fvOptions(alpha, rho, omega_)
+        );
+
+        omegaEqn.ref().relax();
+        fvOptions.constrain(omegaEqn.ref());
+        omegaEqn.ref().boundaryManipulate(omega_.boundaryFieldRef());
+        solve(omegaEqn);
+        fvOptions.correct(omega_);
+        bound(omega_, this->omegaMin_);
     }
 
-     forAll(k_.internalField(), id)
-    {
-//      if (ClusterId[id] == 0)
-//      {
-//              Info<< "\n For ClusterId 0 apply model 0 \n" << endl;
-//
-//      }
-//      else if (ClusterId[id] == 1)
-//      {
-//              Info<< "\n For ClusterId 1 apply model 1 \n" << endl;
-//
-//      }
-//      else  if (ClusterId[id] == 2)
-//      {
-//              Info<< "\n For ClusterId 2 apply model 2 \n" << endl;
-//      }
-//      else
-//      {
-//              Info<< "\n Undefined ClusterId !!! \n" << endl;
-//      }
+     	// Turbulent kinetic energy equation
+     	tmp<fvScalarMatrix> kEqn
+     	(
+     	    fvm::ddt(alpha, rho, k_)
+     	  + fvm::div(alphaRhoPhi, k_)
+     	  - fvm::laplacian(alpha*rho*DkEff(F1), k_)
+     	 ==
+     	    alpha()*rho()*Pk(G)
+     	  + alpha()*rho()*Rterm
+     	  - fvm::SuSp((2.0/3.0)*alpha()*rho()*divU, k_)
+     	  - fvm::Sp(alpha()*rho()*epsilonByk(F1, F23), k_)
+     	  + kSource()
+     	  + fvOptions(alpha, rho, k_)
+     	);
 
-        // to visualize clusters on plot
-        cluster_[id] = ClusterId[id];
-        //int y = (int)x;
-    }
+     	kEqn.ref().relax();
+     	fvOptions.constrain(kEqn.ref());
+     	solve(kEqn);
+     	fvOptions.correct(k_);
+     	bound(k_, this->kMin_);
+
+     	correctNut(S2, F23);
 
 }
-
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
